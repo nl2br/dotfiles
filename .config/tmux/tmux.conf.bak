@@ -1,0 +1,101 @@
+set-option -sa terminal-overrides ",xterm*:Tc"
+set -g mouse on
+
+set -g set-clipboard on
+
+
+unbind C-b
+set -g prefix C-Space
+bind C-Space send-prefix
+
+# Vim style pane selection
+bind h select-pane -L
+bind j select-pane -D 
+bind k select-pane -U
+bind l select-pane -R
+
+# Start windows and panes at 1, not 0
+set -g base-index 1
+set -g pane-base-index 1
+set-window-option -g pane-base-index 1
+set-option -g renumber-windows on
+
+# Use Alt-arrow keys without prefix key to switch panes
+bind -n M-Left select-pane -L
+bind -n M-Right select-pane -R
+bind -n M-Up select-pane -U
+bind -n M-Down select-pane -D
+
+# Shift arrow to switch windows
+bind -n S-Left  previous-window
+bind -n S-Right next-window
+
+# Shift Alt vim keys to switch windows
+bind -n M-H previous-window
+bind -n M-L next-window
+
+set -g @catppuccin_flavour 'mocha'
+
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+set -g @plugin 'christoomey/vim-tmux-navigator'
+set -g @plugin 'dreamsofcode-io/catppuccin-tmux'
+set -g @plugin 'tmux-plugins/tmux-yank'
+
+
+
+# set vi-mode
+# set-window-option -g mode-keys vi
+# keybindings
+# bind-key -T copy-mode-vi v send-keys -X begin-selection
+# bind-key -T copy-mode-vi C-v send-keys -X rectangle-toggle
+# bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
+
+# Vi keys en copy-mode
+set -g mode-keys vi
+
+# Début sélection avec v (en copy-mode vi)
+bind -T copy-mode-vi v send -X begin-selection
+
+# Copier la sélection vers le presse-papier X11 et quitter le copy-mode
+bind -T copy-mode-vi y send -X copy-pipe-and-cancel "xclip -selection clipboard -in"
+
+# (Optionnel) Copier toute la ligne courante
+bind -T copy-mode-vi Y send -X copy-line
+
+# Coller depuis le buffer tmux (Prefix + P)
+unbind P
+bind   P paste-buffer
+
+# Rester en copy-mode après un drag à la souris (si souhaité)
+unbind -T copy-mode-vi MouseDragEnd1Pane
+
+# Laisser tmux synchroniser le presse-papier quand possible (OSC 52, etc.)
+set -g set-clipboard on
+
+
+
+# bind '"' split-window -v -c "#{pane_current_path}"i
+# bind % split-window -h -c "#{pane_current_path}"
+
+# Désactive les bindings par défaut pour ne pas avoir de doublons
+unbind '"'
+unbind %
+# v = split vertical (donc fenêtre en colonnes)
+bind-key v split-window -h -c '#{pane_current_path}'
+# h = split horizontal (donc fenêtre en lignes)
+bind-key h split-window -v -c '#{pane_current_path}'
+
+
+unbind x              # Supprime le binding par défaut
+bind-key x kill-pane  # Tue le pane sans confirmation
+
+
+
+## DISPLAY POPUPS
+# bind C-n display-popup -E 'bash -i -c "read -p \"Session name: \" name; tmux new-session -d -s \$name && tmux switch-client -t \$name"'
+# bind C-j display-popup -E "tmux list-sessions | sed -E 's/:.*$//' | grep -v \"^$(tmux display-message -p '#S')\$\" | fzf --reverse | xargs tmux switch-client -t"
+
+
+run '~/.tmux/plugins/tpm/tpm'
+

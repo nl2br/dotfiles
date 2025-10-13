@@ -1,0 +1,250 @@
+-- ~/.config/nvim/lua/plugins/lsp.lua
+return {
+  "neovim/nvim-lspconfig",
+  lazy = false, -- charge tôt pour que vim.lsp.config/enable soit dispo
+  dependencies = {
+    { "williamboman/mason.nvim", config = true },
+    "williamboman/mason-lspconfig.nvim",
+    "hrsh7th/cmp-nvim-lsp",
+  },
+  config = function()
+    --------------------------------------------------------------------
+    -- REQUIRE
+    --------------------------------------------------------------------
+    local lspconfig = require("lspconfig")
+    local mlsp = require("mason-lspconfig")
+
+    --------------------------------------------------------------------
+    -- HELPERS (root & vue major)
+    --------------------------------------------------------------------
+    local function normalize_fname(fname)
+      if type(fname) == "number" then fname = vim.api.nvim_buf_get_name(fname) end
+      if type(fname) ~= "string" or fname == "" then fname = vim.api.nvim_buf_get_name(0) end
+      if fname == "" then fname = vim.loop.cwd() end
+      return fname
+    end
+
+    local function find_root(start)
+      local path = normalize_fname(start)
+      local found = vim.fs.find({ "package.json", "tsconfig.json", ".git" }, { upward = true, path = path })[1]
+      return (found and found ~= "") and vim.fs.dirname(found) or vim.loop.cwd()
+    end
+
+    local function read_json(path)
+      if type(path) ~= "string" or path == "" or not vim.uv.fs_stat(path) then return nil end
+      local ok, lines = pcall(vim.fn.readfile, path); if not ok then return nil end
+      local ok2, json = pcall(vim.json.decode, table.concat(lines, "\n"))
+      return ok2 and json or nil
+    end
+
+    local function detect_vue_major(root_dir)
+      local pkg = read_json(root_dir .. "/package.json")
+      if not pkg then return nil end
+      local deps = vim.tbl_extend("force", pkg.dependencies or {}, pkg.devDependencies or {})
+      local v = deps["vue"]
+      if type(v) ~= "string" then return nil end
+      if v:match("[%^~]?%s*3") then return 3 end
+      if v:match("[%^~]?%s*2") then return 2 end
+      return nil
+    end
+
+    --------------------------------------------------------------------
+    -- CAPABILITIES / ON_ATTACH (désactive format côté LSP)
+    --------------------------------------------------------------------
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    local ok_cmp, cmp_lsp = pcall(require, "cmp_nvim_lsp")
+    if ok_cmp then capabilities = cmp_lsp.default_capabilities(capabilities) end
+
+    local function on_attach(client, bufnr)
+      -- Laisse Prettier/Conform gérer le formatage
+      if client.server_capabilities then
+        client.server_capabilities.documentFormattingProvider = false
+        client.server_capabilities.documentRangeFormattingProvider = false
+      end
+      -- keymaps de base
+      local map = function(mode, lhs, rhs, desc)
+        vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
+      end
+      map("n", "gd", vim.lsp.buf.definition, "LSP: definition")
+      map("n", "gD", vim.lsp.buf.declaration, "LSP: declaration")
+      map("n", "gi", vim.lsp.buf.implementation, "LSP: implementation")
+      map("n", "gr", vim.lsp.buf.references, "LSP: references")
+      map("n", "K",  vim.lsp.buf.hover, "LSP: hover")
+      map("n", "<leader>rn", vim.lsp.buf.rename, "LSP: rename")
+      map("n", "<leader>ca", vim.lsp.buf.code_action, "LSP: code action")
+      map("n", "]d", vim.diagnostic.goto_next, "Diag: next")
+      map("n", "[d", vim.diagnostic.goto_prev, "Diag: prev")
+    end
+
+    --------------------------------------------------------------------
+    -- MASON + mason-lspconfig
+    --------------------------------------------------------------------
+    require("mason").setup()
+
+    mlsp.setup({
+      -- IMPORTANT: noms de serveurs = noms lspconfig
+      ensure_installed = {
+        "vtsls",          -- TypeScript/JS (compagnon de Volar)
+        "vue_ls",         -- Volar (Vue 3)
+        "vuels",          -- Vetur (Vue 2) si besoin
+        "eslint",
+        "html",
+        "cssls",
+        "jsonls",
+        "lua_ls",
+        "emmet_language_server",
+        "tailwindcss",
+      },
+    })
+
+    --------------------------------------------------------------------
+    -- CONFIGS via API 0.10: vim.lsp.config(...) + vim.lsp.enable(...)
+    --------------------------------------------------------------------
+
+    -- ===== TypeScript: VTSLS (inclut .vue pour que Volar le voie) =====
+    do
+      -- Optionnel : plugin TS de Volar dans VTSLS (améliore l'expérience TS dans .vue)
+      local vue_plugin_path = vim.fn.stdpath("data")
+        .. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
+
+      vim.lsp.config("vtsls", {
+        capabilities = capabilities,
+        filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
+        root_dir = function(fname) return find_root(fname) end,
+        init_options = {
+          plugins = {
+            {
+              name = "@vue/typescript-plugin",
+              location = vue_plugin_path,
+              languages = { "vue" },
+            },
+          },
+        },
+        on_attach = function(client, bufnr)
+          -- évite les tokens sémantiques doublons avec Volar sur .vue
+          if vim.bo[bufnr].filetype == "vue" then
+            client.server_capabilities.semanticTokensProvider = nil
+          end
+          on_attach(client, bufnr)
+        end,
+      })
+      vim.lsp.enable("vtsls")
+    end
+
+    -- ======================== Volar (Vue 3) ============================
+    do
+      vim.lsp.config("vue_ls", {
+        capabilities = capabilities,
+        filetypes = { "vue" },
+        root_dir = function(fname)
+          local root = find_root(fname); if not root then return nil end
+          return (detect_vue_major(root) == 3) and root or nil
+        end,
+        settings = {
+          typescript = {
+            inlayHints = {
+              enumMemberValues = { enabled = true },
+              functionLikeReturnTypes = { enabled = true },
+              propertyDeclarationTypes = { enabled = true },
+              parameterTypes = { enabled = true, suppressWhenArgumentMatchesName = true },
+              variableTypes = { enabled = true },
+            },
+          },
+        },
+        on_attach = on_attach,
+      })
+      vim.lsp.enable("vue_ls")
+    end
+
+    -- ========================= Vetur (Vue 2) ===========================
+    do
+      vim.lsp.config("vuels", {
+        capabilities = capabilities,
+        filetypes = { "vue" },
+        root_dir = function(fname)
+          local root = find_root(fname); if not root then return nil end
+          return (detect_vue_major(root) == 2) and root or nil
+        end,
+        init_options = {
+          config = {
+            vetur = {
+              validation = { template = true, script = true, style = true },
+              completion = { autoImport = true, tagCasing = "kebab" },
+              format = { enable = false }, -- pas de format via Vetur
+            },
+          },
+        },
+        on_attach = on_attach,
+      })
+      vim.lsp.enable("vuels")
+    end
+
+    -- ============================ ESLint ===============================
+    do
+      vim.lsp.config("eslint", {
+        capabilities = capabilities,
+        settings = { format = false }, -- lint only (format géré par Prettier)
+        on_attach = on_attach,
+      })
+      vim.lsp.enable("eslint")
+    end
+
+    -- ====================== HTML / CSS / JSON ==========================
+    do
+      vim.lsp.config("html", {
+        capabilities = capabilities,
+        filetypes = { "html", "ejs", "vue" },
+        on_attach = on_attach,
+      })
+      vim.lsp.enable("html")
+
+      vim.lsp.config("cssls", {
+        capabilities = capabilities,
+        filetypes = { "css", "scss", "less", "vue" },
+        init_options = { provideFormatter = true },
+        on_attach = on_attach,
+      })
+      vim.lsp.enable("cssls")
+
+      vim.lsp.config("jsonls", {
+        capabilities = capabilities,
+        on_attach = on_attach,
+      })
+      vim.lsp.enable("jsonls")
+    end
+
+    -- ============================ Lua =================================
+    do
+      vim.lsp.config("lua_ls", {
+        capabilities = capabilities,
+        settings = {
+          Lua = {
+            runtime = { version = "LuaJIT" },
+            diagnostics = { globals = { "vim" } },
+            workspace = { checkThirdParty = false },
+            telemetry = { enable = false },
+          },
+        },
+        on_attach = on_attach,
+      })
+      vim.lsp.enable("lua_ls")
+    end
+
+    -- ===================== Emmet / Tailwind ===========================
+    do
+      vim.lsp.config("emmet_language_server", {
+        capabilities = capabilities,
+        filetypes = { "html", "css", "javascriptreact", "typescriptreact", "vue" },
+        on_attach = on_attach,
+      })
+      vim.lsp.enable("emmet_language_server")
+
+      vim.lsp.config("tailwindcss", {
+        capabilities = capabilities,
+        on_attach = on_attach,
+      })
+      vim.lsp.enable("tailwindcss")
+    end
+  end,
+}
+

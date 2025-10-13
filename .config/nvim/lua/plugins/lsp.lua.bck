@@ -1,0 +1,216 @@
+return {
+  "neovim/nvim-lspconfig",
+  event = { "BufReadPre", "BufNewFile" },
+  dependencies = {
+    { "williamboman/mason.nvim", config = true },
+    "williamboman/mason-lspconfig.nvim",
+    "hrsh7th/cmp-nvim-lsp",
+  },
+  config = function()
+    require("mason").setup()
+    -- ========== Helpers robustes ==========
+    local function normalize_fname(fname)
+      if type(fname) == "number" then
+        fname = vim.api.nvim_buf_get_name(fname)
+      end
+      if type(fname) ~= "string" or fname == "" then
+        fname = vim.api.nvim_buf_get_name(0)
+      end
+      if fname == "" then
+        fname = vim.loop.cwd()
+      end
+      return fname
+    end
+
+    local function find_root(start)
+      local path = normalize_fname(start)
+      local found = vim.fs.find(
+        { "package.json", "tsconfig.json", ".git" },
+        { upward = true, path = path }
+      )[1]
+      return (found and found ~= "") and vim.fs.dirname(found) or nil
+    end
+
+    local function read_json(path)
+      if type(path) ~= "string" or path == "" or not vim.uv.fs_stat(path) then return nil end
+      local ok, lines = pcall(vim.fn.readfile, path)
+      if not ok then return nil end
+      local ok2, json = pcall(vim.json.decode, table.concat(lines, "\n"))
+      return ok2 and json or nil
+    end
+
+    local function detect_vue_major(root_dir)
+      local pkg = read_json(root_dir .. "/package.json")
+      if not pkg then return nil end
+      local deps = vim.tbl_extend("force", pkg.dependencies or {}, pkg.devDependencies or {})
+      local v = deps["vue"]
+      if type(v) ~= "string" then return nil end
+      if v:match("[%^~]?%s*3") then return 3 end
+      if v:match("[%^~]?%s*2") then return 2 end
+      return nil
+    end
+
+    -- ========== Capabilities & Attach ==========
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    local ok_cmp, cmp_lsp = pcall(require, "cmp_nvim_lsp")
+    if ok_cmp then
+      capabilities = cmp_lsp.default_capabilities(capabilities)
+    end
+
+    local function on_attach(client, bufnr)
+        -- 🔒 On coupe tout format côté LSP : Conform/Prettier s’en charge
+  if client.server_capabilities then
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.documentRangeFormattingProvider = false
+      end
+
+      local map = function(mode, lhs, rhs, desc)
+        vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
+      end
+      map("n", "gd", vim.lsp.buf.definition, "Go to Definition")
+      map("n", "K", vim.lsp.buf.hover, "Hover")
+      map("n", "<leader>ca", vim.lsp.buf.code_action, "Code Action")
+      map("n", "<leader>rn", vim.lsp.buf.rename, "Rename")
+      map("n", "]d", vim.diagnostic.goto_next, "Next diagnostic")
+      map("n", "[d", vim.diagnostic.goto_prev, "Prev diagnostic")
+    end
+
+    -- ========== Mason v2 ==========
+    require("mason-lspconfig").setup({
+      ensure_installed = {
+        "vtsls",        -- TypeScript / JS + Vue 3
+        "vue_ls",       -- Volar (Vue 3)
+        "vuels",        -- Vetur (Vue 2)
+        "eslint",
+        "html",
+        "cssls",
+        "jsonls",
+      },
+    })
+
+    -- Config par défaut
+    vim.lsp.config("*", {
+      on_attach = on_attach,
+      capabilities = capabilities,
+    })
+
+    -- ========== Prépare le chemin du plugin Volar ==========
+    local mason_root = vim.fn.expand("$MASON")
+    if mason_root == "" then
+      mason_root = vim.fn.stdpath("data") .. "/mason"
+    end
+    local vue_plugin_path = mason_root .. "/packages/vue-language-server/node_modules/@vue/language-server"
+
+    -- ========== VTSLS (TypeScript + JS + support Vue 3) ==========
+    vim.lsp.config("vtsls", {
+      filetypes = { "javascript", "typescript", "vue" },
+      root_dir = function(fname)
+        local root = find_root(fname)
+        if not root then return nil end
+        if normalize_fname(fname):match("%.vue$") and detect_vue_major(root) ~= 3 then
+          return nil
+        end
+        return root
+      end,
+      settings = {
+        vtsls = {
+          tsserver = {
+            globalPlugins = {
+              {
+                name = "@vue/typescript-plugin",
+                location = vue_plugin_path,
+                languages = { "vue" },
+                configNamespace = "typescript",
+              },
+            },
+          },
+        },
+      },
+      on_attach = function(client, bufnr)
+        if vim.bo[bufnr].filetype == "vue" then
+          client.server_capabilities.semanticTokensProvider = nil
+        end
+        on_attach(client, bufnr)
+      end,
+    })
+
+    -- ========== Vue 3 : Volar ==========
+    vim.lsp.config("vue_ls", {
+      filetypes = { "vue" },
+      root_dir = function(fname)
+        local root = find_root(fname)
+        if not root then return nil end
+        return (detect_vue_major(root) == 3) and root or nil
+      end,
+      on_init = function(client)
+        client.handlers["tsserver/request"] = function(_, result, context)
+          local vts_clients = vim.lsp.get_clients({ bufnr = context.bufnr, name = "vtsls" })
+          if #vts_clients == 0 then
+            vim.notify("vtsls introuvable : vue_ls ne pourra pas résoudre TypeScript sans lui.", vim.log.levels.ERROR)
+            return
+          end
+          local ts_client = vts_clients[1]
+          local param = unpack(result)
+          local id, command, payload = unpack(param)
+          ts_client:exec_cmd({
+            title = "vue_request_forward",
+            command = "typescript.tsserverRequest",
+            arguments = { command, payload },
+          }, { bufnr = context.bufnr }, function(_, r)
+            local response_data = { { id, r and r.body or nil } }
+            client:notify("tsserver/response", response_data)
+          end)
+        end
+      end,
+      settings = {
+        typescript = {
+          inlayHints = {
+            enumMemberValues = { enabled = true },
+            functionLikeReturnTypes = { enabled = true },
+            propertyDeclarationTypes = { enabled = true },
+            parameterTypes = { enabled = true, suppressWhenArgumentMatchesName = true },
+            variableTypes = { enabled = true },
+          },
+        },
+      },
+    })
+
+    -- ========== Vue 2 : Vetur ==========
+    vim.lsp.config("vuels", {
+      filetypes = { "vue" },
+      root_dir = function(fname)
+        local root = find_root(fname)
+        if not root then return nil end
+        return (detect_vue_major(root) == 2) and root or nil
+      end,
+      init_options = {
+        config = {
+          vetur = {
+            validation = { template = true, script = true, style = true },
+            completion = { autoImport = true, tagCasing = "kebab" },
+            format = { enable = false },
+          },
+        },
+      },
+    })
+
+    -- ========== ESLint ==========
+    vim.lsp.config("eslint", {
+      settings = { format = false },
+    })
+
+vim.lsp.enable({
+  "vtsls",
+  "vue_ls",
+  "vuels",
+  "html",
+  "cssls",
+  "jsonls",
+  "eslint",
+})
+
+
+
+  end,
+}
+

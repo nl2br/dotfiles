@@ -1,0 +1,6 @@
+require('config.options')
+require('config.keybinds')
+require('config.lazy')
+require('config.autocmds')
+require('config.diagnostics')
+require('config.system')
