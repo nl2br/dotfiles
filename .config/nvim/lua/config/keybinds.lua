@@ -4,8 +4,8 @@ vim.keymap.set("n", "<leader>cd", vim.cmd.Ex)
 -- Center screen when jumping
 vim.keymap.set("n", "n", "nzzzv", { desc = "Next search result (centered)" })
 vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search result (centered)" })
-vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Half page down (centered)" })
-vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Half page up (centered)" })
+-- vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Half page down (centered)" })
+-- vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Half page up (centered)" })
 
 -- Buffer navigation
 vim.keymap.set("n", "<leader>bn", "<Cmd>bnext<CR>", { desc = "Next buffer" })
@@ -35,5 +35,11 @@ vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines and keep cursor position"
 -- Quick config editing
 vim.keymap.set("n", "<leader>rc", "<Cmd>e ~/.config/nvim/init.lua<CR>", { desc = "Edit config" })
 
-
+-- Search exact match in all files with telescope
+vim.keymap.set("n", "<leader>fw", function()
+  local word = vim.fn.expand("<cword>")
+  require("telescope.builtin").live_grep({
+    default_text = "\\b" .. word .. "\\b",
+  })
+end, { desc = "Telescope - grep exact word under the cursor" })
 
