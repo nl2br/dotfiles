@@ -125,4 +125,4 @@ export NVM_DIR="$HOME/.nvm"
 
 export PATH="$HOME/.nvm/versions/node/$(nvm version)/bin:$PATH"
 
-alias cfg='git --git-dir=/home/nathan/.cfg/ --work-tree=/home/nathan'
+alias cfg='git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
