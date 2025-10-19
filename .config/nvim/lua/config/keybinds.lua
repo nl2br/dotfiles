@@ -1,176 +1,176 @@
 -- vim.g.mapleader = " "
--- vim.keymap.set("n", "<leader>cd", vim.cmd.Ex)
+vim.keymap.set("n", "<leader>cd", vim.cmd.ex)
 --
--- Center screen when jumping
--- vim.keymap.set("n", "n", "nzzzv", { desc = "Next search result (centered)" })
--- vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search result (centered)" })
+-- center screen when jumping
+-- vim.keymap.set("n", "n", "nzzzv", { desc = "next search result (centered)" })
+-- vim.keymap.set("n", "n", "nzzzv", { desc = "previous search result (centered)" })
 --
--- -- Buffer navigation
--- vim.keymap.set("n", "<leader>bn", "<Cmd>bnext<CR>", { desc = "Next buffer" })
--- vim.keymap.set("n", "<leader>bp", "<Cmd>bprevious<CR>", { desc = "Previous buffer" })
+-- -- buffer navigation
+-- vim.keymap.set("n", "<leader>bn", "<cmd>bnext<cr>", { desc = "next buffer" })
+-- vim.keymap.set("n", "<leader>bp", "<cmd>bprevious<cr>", { desc = "previous buffer" })
 --
--- -- Better window navigation
--- vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
--- vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move to bottom window" })
--- vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move to top window" })
--- vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
+-- -- better window navigation
+-- vim.keymap.set("n", "<c-h>", "<c-w>h", { desc = "move to left window" })
+-- vim.keymap.set("n", "<c-j>", "<c-w>j", { desc = "move to bottom window" })
+-- vim.keymap.set("n", "<c-k>", "<c-w>k", { desc = "move to top window" })
+-- vim.keymap.set("n", "<c-l>", "<c-w>l", { desc = "move to right window" })
 --
--- -- Splitting & Resizing
--- vim.keymap.set("n", "<leader>sv", "<Cmd>vsplit<CR>", { desc = "Split window vertically" })
--- vim.keymap.set("n", "<leader>sh", "<Cmd>split<CR>", { desc = "Split window horizontally" })
--- vim.keymap.set("n", "<C-Up>", "<Cmd>resize +2<CR>", { desc = "Increase window height" })
--- vim.keymap.set("n", "<C-Down>", "<Cmd>resize -2<CR>", { desc = "Decrease window height" })
--- vim.keymap.set("n", "<C-Left>", "<Cmd>vertical resize -2<CR>", { desc = "Decrease window width" })
--- vim.keymap.set("n", "<C-Right>", "<Cmd>vertical resize +2<CR>", { desc = "Increase window width" })
+-- -- splitting & resizing
+-- vim.keymap.set("n", "<leader>sv", "<cmd>vsplit<cr>", { desc = "split window vertically" })
+-- vim.keymap.set("n", "<leader>sh", "<cmd>split<cr>", { desc = "split window horizontally" })
+-- vim.keymap.set("n", "<c-up>", "<cmd>resize +2<cr>", { desc = "increase window height" })
+-- vim.keymap.set("n", "<c-down>", "<cmd>resize -2<cr>", { desc = "decrease window height" })
+-- vim.keymap.set("n", "<c-left>", "<cmd>vertical resize -2<cr>", { desc = "decrease window width" })
+-- vim.keymap.set("n", "<c-right>", "<cmd>vertical resize +2<cr>", { desc = "increase window width" })
 --
--- -- Better indenting in visual mode
--- vim.keymap.set("v", "<", "<gv", { desc = "Indent left and reselect" })
--- vim.keymap.set("v", ">", ">gv", { desc = "Indent right and reselect" })
+-- -- better indenting in visual mode
+-- vim.keymap.set("v", "<", "<gv", { desc = "indent left and reselect" })
+-- vim.keymap.set("v", ">", ">gv", { desc = "indent right and reselect" })
 --
--- -- Better J behavior
--- vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines and keep cursor position" })
+-- -- better j behavior
+-- vim.keymap.set("n", "j", "mzj`z", { desc = "join lines and keep cursor position" })
 --
--- -- Quick config editing
--- vim.keymap.set("n", "<leader>rc", "<Cmd>e ~/.config/nvim/init.lua<CR>", { desc = "Edit config" })
+-- -- quick config editing
+-- vim.keymap.set("n", "<leader>rc", "<cmd>e ~/.config/nvim/init.lua<cr>", { desc = "edit config" })
 --
 
 
 -- =========================================================
--- Popular Neovim keymaps (leader = <Space>)
+-- popular neovim keymaps (leader = <space>)
 -- =========================================================
 vim.g.mapleader = " "
 
--- 🔹 Basic editing
-vim.keymap.set("n", "Y", "y$", { noremap = true, silent = true, desc = "Yank until end of line" })
-vim.keymap.set("x", "p", [["_dP]], { noremap = true, silent = true, desc = "Paste without overwriting register" })
-vim.keymap.set({ "n", "x" }, "<", "<gv", { noremap = true, silent = true, desc = "Dedent and keep selection" })
-vim.keymap.set({ "n", "x" }, ">", ">gv", { noremap = true, silent = true, desc = "Indent and keep selection" })
-vim.keymap.set({ "n", "i", "x" }, "<C-s>", "<Esc>:w<CR>", { noremap = true, silent = true, desc = "Save file" })
-vim.keymap.set("n", "<leader>q", ":q<CR>", { noremap = true, silent = true, desc = "Quit current window" })
-vim.keymap.set("n", "<leader>Q", ":qa!<CR>", { noremap = true, silent = true, desc = "Quit all (force)" })
+-- 🔹 basic editing
+vim.keymap.set("n", "y", "y$", { noremap = true, silent = true, desc = "yank until end of line" })
+vim.keymap.set("x", "p", [["_dp]], { noremap = true, silent = true, desc = "paste without overwriting register" })
+vim.keymap.set({ "n", "x" }, "<", "<gv", { noremap = true, silent = true, desc = "dedent and keep selection" })
+vim.keymap.set({ "n", "x" }, ">", ">gv", { noremap = true, silent = true, desc = "indent and keep selection" })
+vim.keymap.set({ "n", "i", "x" }, "<c-s>", "<esc>:w<cr>", { noremap = true, silent = true, desc = "save file" })
+vim.keymap.set("n", "<leader>q", ":q<cr>", { noremap = true, silent = true, desc = "quit current window" })
+vim.keymap.set("n", "<leader>q", ":qa!<cr>", { noremap = true, silent = true, desc = "quit all (force)" })
 
--- 🔹 Movement
-vim.keymap.set("n", "J", "mzJ`z", { noremap = true, silent = true, desc = "Join line and keep cursor" })
-vim.keymap.set("n", "n", "nzzzv", { noremap = true, silent = true, desc = "Next search result centered" })
-vim.keymap.set("n", "N", "Nzzzv", { noremap = true, silent = true, desc = "Previous search result centered" })
-vim.keymap.set("n", "<C-d>", "<C-d>zz", { noremap = true, silent = true, desc = "Scroll down centered" })
-vim.keymap.set("n", "<C-u>", "<C-u>zz", { noremap = true, silent = true, desc = "Scroll up centered" })
-vim.keymap.set("n", "*", "*zzzv", { noremap = true, silent = true, desc = "Search word under cursor centered" })
--- Garder la ligne centrée à chaque mouvement vertical
+-- 🔹 movement
+vim.keymap.set("n", "j", "mzj`z", { noremap = true, silent = true, desc = "join line and keep cursor" })
+vim.keymap.set("n", "n", "nzzzv", { noremap = true, silent = true, desc = "next search result centered" })
+vim.keymap.set("n", "n", "nzzzv", { noremap = true, silent = true, desc = "previous search result centered" })
+vim.keymap.set("n", "<c-d>", "<c-d>zz", { noremap = true, silent = true, desc = "scroll down centered" })
+vim.keymap.set("n", "<c-u>", "<c-u>zz", { noremap = true, silent = true, desc = "scroll up centered" })
+vim.keymap.set("n", "*", "*zzzv", { noremap = true, silent = true, desc = "search word under cursor centered" })
+-- garder la ligne centrée à chaque mouvement vertical
 vim.keymap.set('n', 'j', 'jzz', { noremap = true, silent = true })
 vim.keymap.set('n', 'k', 'kzz', { noremap = true, silent = true })
 
 
 
--- 🔹 Window management
-vim.keymap.set("n", "<leader>sv", "<C-w>v", { noremap = true, silent = true, desc = "Split window vertically" })
-vim.keymap.set("n", "<leader>sh", "<C-w>s", { noremap = true, silent = true, desc = "Split window horizontally" })
-vim.keymap.set("n", "<leader>se", "<C-w>=", { noremap = true, silent = true, desc = "Equalize window sizes" })
-vim.keymap.set("n", "<leader>sx", ":close<CR>", { noremap = true, silent = true, desc = "Close current split" })
-vim.keymap.set("n", "<C-h>", "<C-w>h", { noremap = true, silent = true, desc = "Focus left window" })
-vim.keymap.set("n", "<C-j>", "<C-w>j", { noremap = true, silent = true, desc = "Focus below window" })
-vim.keymap.set("n", "<C-k>", "<C-w>k", { noremap = true, silent = true, desc = "Focus above window" })
-vim.keymap.set("n", "<C-l>", "<C-w>l", { noremap = true, silent = true, desc = "Focus right window" })
+-- 🔹 window management
+vim.keymap.set("n", "<leader>sv", "<c-w>v", { noremap = true, silent = true, desc = "split window vertically" })
+vim.keymap.set("n", "<leader>sh", "<c-w>s", { noremap = true, silent = true, desc = "split window horizontally" })
+vim.keymap.set("n", "<leader>se", "<c-w>=", { noremap = true, silent = true, desc = "equalize window sizes" })
+vim.keymap.set("n", "<leader>sx", ":close<cr>", { noremap = true, silent = true, desc = "close current split" })
+vim.keymap.set("n", "<c-h>", "<c-w>h", { noremap = true, silent = true, desc = "focus left window" })
+vim.keymap.set("n", "<c-j>", "<c-w>j", { noremap = true, silent = true, desc = "focus below window" })
+vim.keymap.set("n", "<c-k>", "<c-w>k", { noremap = true, silent = true, desc = "focus above window" })
+vim.keymap.set("n", "<c-l>", "<c-w>l", { noremap = true, silent = true, desc = "focus right window" })
 
--- 🔹 Buffers
-vim.keymap.set("n", "<S-h>", ":bprevious<CR>", { noremap = true, silent = true, desc = "Previous buffer" })
-vim.keymap.set("n", "<S-l>", ":bnext<CR>", { noremap = true, silent = true, desc = "Next buffer" })
-vim.keymap.set("n", "<leader>bd", ":bdelete<CR>", { noremap = true, silent = true, desc = "Close buffer" })
-vim.keymap.set("n", "<leader>bo", ":%bd|e#<CR>", { noremap = true, silent = true, desc = "Close all buffers except current" })
+-- 🔹 buffers
+vim.keymap.set("n", "<s-h>", ":bprevious<cr>", { noremap = true, silent = true, desc = "previous buffer" })
+vim.keymap.set("n", "<s-l>", ":bnext<cr>", { noremap = true, silent = true, desc = "next buffer" })
+vim.keymap.set("n", "<leader>bd", ":bdelete<cr>", { noremap = true, silent = true, desc = "close buffer" })
+vim.keymap.set("n", "<leader>bo", ":%bd|e#<cr>", { noremap = true, silent = true, desc = "close all buffers except current" })
 
--- 🔹 File explorer (adjust depending on your setup)
--- vim.keymap.set("n", "<leader>e", ":Lexplore %:p:h<CR>", { noremap = true, silent = true, desc = "Open file explorer" })
+-- 🔹 file explorer (adjust depending on your setup)
+-- vim.keymap.set("n", "<leader>e", ":lexplore %:p:h<cr>", { noremap = true, silent = true, desc = "open file explorer" })
 
--- 🔹 Telescope
+-- 🔹 telescope
 -- pcall(function()
 --   local tb = require("telescope.builtin")
---   vim.keymap.set("n", "<leader>ff", tb.find_files, { desc = "Find files" })
---   vim.keymap.set("n", "<leader>fg", tb.live_grep, { desc = "Live grep" })
---   vim.keymap.set("n", "<leader>fb", tb.buffers, { desc = "List buffers" })
---   vim.keymap.set("n", "<leader>fh", tb.help_tags, { desc = "Help tags" })
---   vim.keymap.set("n", "<leader>fr", tb.resume, { desc = "Resume last search" })
+--   vim.keymap.set("n", "<leader>ff", tb.find_files, { desc = "find files" })
+--   vim.keymap.set("n", "<leader>fg", tb.live_grep, { desc = "live grep" })
+--   vim.keymap.set("n", "<leader>fb", tb.buffers, { desc = "list buffers" })
+--   vim.keymap.set("n", "<leader>fh", tb.help_tags, { desc = "help tags" })
+--   vim.keymap.set("n", "<leader>fr", tb.resume, { desc = "resume last search" })
 -- end)
 
--- 🔹 LSP
--- vim.keymap.set("n", "gd", vim.lsp.buf.definition, { noremap = true, silent = true, desc = "Go to definition" })
--- vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { noremap = true, silent = true, desc = "Go to declaration" })
--- vim.keymap.set("n", "gr", vim.lsp.buf.references, { noremap = true, silent = true, desc = "List references" })
--- vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { noremap = true, silent = true, desc = "Go to implementation" })
--- vim.keymap.set("n", "K", vim.lsp.buf.hover, { noremap = true, silent = true, desc = "Hover documentation" })
--- vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { noremap = true, silent = true, desc = "Rename symbol" })
--- vim.keymap.set({ "n", "x" }, "<leader>ca", vim.lsp.buf.code_action, { noremap = true, silent = true, desc = "Code action" })
--- vim.keymap.set("n", "<leader>fm", function() vim.lsp.buf.format({ async = true }) end, { noremap = true, silent = true, desc = "Format file" })
+-- 🔹 lsp
+-- vim.keymap.set("n", "gd", vim.lsp.buf.definition, { noremap = true, silent = true, desc = "go to definition" })
+-- vim.keymap.set("n", "gd", vim.lsp.buf.declaration, { noremap = true, silent = true, desc = "go to declaration" })
+-- vim.keymap.set("n", "gr", vim.lsp.buf.references, { noremap = true, silent = true, desc = "list references" })
+-- vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { noremap = true, silent = true, desc = "go to implementation" })
+-- vim.keymap.set("n", "k", vim.lsp.buf.hover, { noremap = true, silent = true, desc = "hover documentation" })
+-- vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { noremap = true, silent = true, desc = "rename symbol" })
+-- vim.keymap.set({ "n", "x" }, "<leader>ca", vim.lsp.buf.code_action, { noremap = true, silent = true, desc = "code action" })
+-- vim.keymap.set("n", "<leader>fm", function() vim.lsp.buf.format({ async = true }) end, { noremap = true, silent = true, desc = "format file" })
 
--- 🔹 Diagnostics
--- vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { noremap = true, silent = true, desc = "Previous diagnostic" })
--- vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { noremap = true, silent = true, desc = "Next diagnostic" })
-vim.keymap.set("n", "<leader>xx", vim.diagnostic.setloclist, { noremap = true, silent = true, desc = "Open diagnostics list" })
+-- 🔹 diagnostics
+-- vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { noremap = true, silent = true, desc = "previous diagnostic" })
+-- vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { noremap = true, silent = true, desc = "next diagnostic" })
+vim.keymap.set("n", "<leader>xx", vim.diagnostic.setloclist, { noremap = true, silent = true, desc = "open diagnostics list" })
 
--- 🔹 Git (gitsigns)
+-- 🔹 git (gitsigns)
 -- pcall(function()
 --   local gs = require("gitsigns")
---   vim.keymap.set("n", "]h", gs.next_hunk, { desc = "Next hunk" })
---   vim.keymap.set("n", "[h", gs.prev_hunk, { desc = "Previous hunk" })
---   vim.keymap.set("n", "<leader>hs", gs.stage_hunk, { desc = "Stage hunk" })
---   vim.keymap.set("n", "<leader>hr", gs.reset_hunk, { desc = "Reset hunk" })
---   vim.keymap.set("n", "<leader>hp", gs.preview_hunk, { desc = "Preview hunk" })
---   vim.keymap.set("n", "<leader>hb", function() gs.blame_line({ full = true }) end, { desc = "Blame line" })
+--   vim.keymap.set("n", "]h", gs.next_hunk, { desc = "next hunk" })
+--   vim.keymap.set("n", "[h", gs.prev_hunk, { desc = "previous hunk" })
+--   vim.keymap.set("n", "<leader>hs", gs.stage_hunk, { desc = "stage hunk" })
+--   vim.keymap.set("n", "<leader>hr", gs.reset_hunk, { desc = "reset hunk" })
+--   vim.keymap.set("n", "<leader>hp", gs.preview_hunk, { desc = "preview hunk" })
+--   vim.keymap.set("n", "<leader>hb", function() gs.blame_line({ full = true }) end, { desc = "blame line" })
 -- end)
 
 
--- 🔹 Quickfix
-vim.keymap.set("n", "<leader>co", ":copen<CR>", { noremap = true, silent = true, desc = "Open quickfix list" })
-vim.keymap.set("n", "<leader>cc", ":cclose<CR>", { noremap = true, silent = true, desc = "Close quickfix list" })
-vim.keymap.set("n", "]q", ":cnext<CR>", { noremap = true, silent = true, desc = "Next quickfix item" })
-vim.keymap.set("n", "[q", ":cprev<CR>", { noremap = true, silent = true, desc = "Previous quickfix item" })
+-- 🔹 quickfix
+vim.keymap.set("n", "<leader>co", ":copen<cr>", { noremap = true, silent = true, desc = "open quickfix list" })
+vim.keymap.set("n", "<leader>cc", ":cclose<cr>", { noremap = true, silent = true, desc = "close quickfix list" })
+vim.keymap.set("n", "]q", ":cnext<cr>", { noremap = true, silent = true, desc = "next quickfix item" })
+vim.keymap.set("n", "[q", ":cprev<cr>", { noremap = true, silent = true, desc = "previous quickfix item" })
 
--- 🔹 Terminal
--- vim.keymap.set("n", "<leader>tt", ":terminal<CR>", { noremap = true, silent = true, desc = "Open terminal" })
--- vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { noremap = true, silent = true, desc = "Exit terminal mode" })
+-- 🔹 terminal
+-- vim.keymap.set("n", "<leader>tt", ":terminal<cr>", { noremap = true, silent = true, desc = "open terminal" })
+-- vim.keymap.set("t", "<esc>", [[<c-\><c-n>]], { noremap = true, silent = true, desc = "exit terminal mode" })
 
--- 🔹 Clipboard
-vim.keymap.set({ "n", "x" }, "<leader>y", [["+y]], { noremap = true, silent = true, desc = "Yank to system clipboard" })
-vim.keymap.set("n", "<leader>Y", [["+Y]], { noremap = true, silent = true, desc = "Yank full line to clipboard" })
-vim.keymap.set({ "n", "x" }, "<leader>d", [["_d]], { noremap = true, silent = true, desc = "Delete without yanking" })
+-- 🔹 clipboard
+vim.keymap.set({ "n", "x" }, "<leader>y", [["+y]], { noremap = true, silent = true, desc = "yank to system clipboard" })
+vim.keymap.set("n", "<leader>y", [["+y]], { noremap = true, silent = true, desc = "yank full line to clipboard" })
+vim.keymap.set({ "n", "x" }, "<leader>d", [["_d]], { noremap = true, silent = true, desc = "delete without yanking" })
 
--- 🔹 Move lines
-vim.keymap.set("n", "<A-j>", ":m .+1<CR>==", { noremap = true, silent = true, desc = "Move line down" })
-vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { noremap = true, silent = true, desc = "Move line up" })
-vim.keymap.set("x", "<A-j>", ":m '>+1<CR>gv=gv", { noremap = true, silent = true, desc = "Move selection down" })
-vim.keymap.set("x", "<A-k>", ":m '<-2<CR>gv=gv", { noremap = true, silent = true, desc = "Move selection up" })
+-- 🔹 move lines
+vim.keymap.set("n", "<a-j>", ":m .+1<cr>==", { noremap = true, silent = true, desc = "move line down" })
+vim.keymap.set("n", "<a-k>", ":m .-2<cr>==", { noremap = true, silent = true, desc = "move line up" })
+vim.keymap.set("x", "<a-j>", ":m '>+1<cr>gv=gv", { noremap = true, silent = true, desc = "move selection down" })
+vim.keymap.set("x", "<a-k>", ":m '<-2<cr>gv=gv", { noremap = true, silent = true, desc = "move selection up" })
 
 -- helps you change all occurrences of the word the cursor is on
-vim.keymap.set("n", "<leader>cw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],{desc = "Change all occurences of the word under the cursor" } )
+vim.keymap.set("n", "<leader>cw", [[:%s/\<<c-r><c-w>\>/<c-r><c-w>/gi<left><left><left>]],{desc = "change all occurences of the word under the cursor" } )
 
--- Search exact match in all files with telescope
+-- search exact match in all files with telescope
 vim.keymap.set("n", "<leader>fw", function()
   local word = vim.fn.expand("<cword>")
   require("telescope.builtin").live_grep({
     default_text = "\\b" .. word .. "\\b",
   })
-end, { desc = "Telescope - grep exact word under the cursor" })
+end, { desc = "telescope - grep exact word under the cursor" })
 
 
 
--- Fonction pour insérer un console.log sous le mot ou la sélection
+-- fonction pour insérer un console.log sous le mot ou la sélection
 local function insert_console_log()
   local mode = vim.fn.mode()
 
-  if mode == "v" or mode == "V" then
-    -- Si on est en mode visuel, récupérer la sélection
+  if mode == "v" or mode == "v" then
+    -- si on est en mode visuel, récupérer la sélection
     vim.cmd('normal! "vy')
     local word = vim.fn.getreg("v")
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<esc>", true, false, true), "n", false)
     vim.api.nvim_put({ string.format('console.log("%s:", %s);', word, word) }, "l", true, true)
   else
-    -- Sinon, récupérer le mot sous le curseur
+    -- sinon, récupérer le mot sous le curseur
     local word = vim.fn.expand("<cword>")
     vim.api.nvim_put({ string.format('console.log("%s:", %s);', word, word) }, "l", true, true)
   end
 end
 
--- Raccourci clavier : Ctrl + L
-vim.keymap.set({ "n", "v" }, "<C-l>", insert_console_log, { desc = "Insert console.log for word/selection" })
+-- raccourci clavier : ctrl + l
+vim.keymap.set({ "n", "v" }, "<c-l>", insert_console_log, { desc = "insert console.log for word/selection" })
 
 
 
