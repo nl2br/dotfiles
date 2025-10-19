@@ -43,7 +43,7 @@ return {
       map("n", "[h", gs.prev_hunk, "Git: Prev hunk")
       -- map("n", "<leader>gs", gs.stage_hunk, "Git: Stage hunk")
       map("n", "<leader>gr", gs.reset_hunk, "Git: Reset hunk")
-      -- map("v", "<leader>gs", function() gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") }) end, "Git: Stage hunk (sel)")
+      map("v", "<leader>gs", function() gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") }) end, "Git: Stage hunk (sel)")
       map("v", "<leader>gr", function() gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") }) end, "Git: Reset hunk (sel)")
       -- map("n", "<leader>gS", gs.stage_buffer, "Git: Stage buffer")
       -- map("n", "<leader>gR", gs.reset_buffer, "Git: Reset buffer")

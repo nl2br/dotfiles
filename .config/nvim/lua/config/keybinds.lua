@@ -56,6 +56,11 @@ vim.keymap.set("n", "N", "Nzzzv", { noremap = true, silent = true, desc = "Previ
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { noremap = true, silent = true, desc = "Scroll down centered" })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { noremap = true, silent = true, desc = "Scroll up centered" })
 vim.keymap.set("n", "*", "*zzzv", { noremap = true, silent = true, desc = "Search word under cursor centered" })
+-- Garder la ligne centrée à chaque mouvement vertical
+vim.keymap.set('n', 'j', 'jzz', { noremap = true, silent = true })
+vim.keymap.set('n', 'k', 'kzz', { noremap = true, silent = true })
+
+
 
 -- 🔹 Window management
 vim.keymap.set("n", "<leader>sv", "<C-w>v", { noremap = true, silent = true, desc = "Split window vertically" })
@@ -120,8 +125,8 @@ vim.keymap.set("n", "]q", ":cnext<CR>", { noremap = true, silent = true, desc = 
 vim.keymap.set("n", "[q", ":cprev<CR>", { noremap = true, silent = true, desc = "Previous quickfix item" })
 
 -- 🔹 Terminal
-vim.keymap.set("n", "<leader>tt", ":terminal<CR>", { noremap = true, silent = true, desc = "Open terminal" })
-vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { noremap = true, silent = true, desc = "Exit terminal mode" })
+-- vim.keymap.set("n", "<leader>tt", ":terminal<CR>", { noremap = true, silent = true, desc = "Open terminal" })
+-- vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { noremap = true, silent = true, desc = "Exit terminal mode" })
 
 -- 🔹 Clipboard
 vim.keymap.set({ "n", "x" }, "<leader>y", [["+y]], { noremap = true, silent = true, desc = "Yank to system clipboard" })
@@ -134,7 +139,8 @@ vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { noremap = true, silent = true, de
 vim.keymap.set("x", "<A-j>", ":m '>+1<CR>gv=gv", { noremap = true, silent = true, desc = "Move selection down" })
 vim.keymap.set("x", "<A-k>", ":m '<-2<CR>gv=gv", { noremap = true, silent = true, desc = "Move selection up" })
 
-
+-- helps you change all occurrences of the word the cursor is on
+vim.keymap.set("n", "<leader>cw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],{desc = "Change all occurences of the word under the cursor" } )
 
 -- Search exact match in all files with telescope
 vim.keymap.set("n", "<leader>fw", function()
@@ -143,4 +149,29 @@ vim.keymap.set("n", "<leader>fw", function()
     default_text = "\\b" .. word .. "\\b",
   })
 end, { desc = "Telescope - grep exact word under the cursor" })
+
+
+
+-- Fonction pour insérer un console.log sous le mot ou la sélection
+local function insert_console_log()
+  local mode = vim.fn.mode()
+
+  if mode == "v" or mode == "V" then
+    -- Si on est en mode visuel, récupérer la sélection
+    vim.cmd('normal! "vy')
+    local word = vim.fn.getreg("v")
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
+    vim.api.nvim_put({ string.format('console.log("%s:", %s);', word, word) }, "l", true, true)
+  else
+    -- Sinon, récupérer le mot sous le curseur
+    local word = vim.fn.expand("<cword>")
+    vim.api.nvim_put({ string.format('console.log("%s:", %s);', word, word) }, "l", true, true)
+  end
+end
+
+-- Raccourci clavier : Ctrl + L
+vim.keymap.set({ "n", "v" }, "<C-l>", insert_console_log, { desc = "Insert console.log for word/selection" })
+
+
+
 
