@@ -8,6 +8,7 @@ return {
         -- formatters/linters CLI
         "eslint",     -- ou "eslint" si tu préfères sans daemon
         "prettier",     -- ou "prettierd"
+        "stylua",
       },
       run_on_start = true,
     })

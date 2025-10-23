@@ -50,15 +50,15 @@ vim.keymap.set("n", "<leader>q", ":q<cr>", { noremap = true, silent = true, desc
 vim.keymap.set("n", "<leader>q", ":qa!<cr>", { noremap = true, silent = true, desc = "quit all (force)" })
 
 -- 🔹 movement
-vim.keymap.set("n", "j", "mzj`z", { noremap = true, silent = true, desc = "join line and keep cursor" })
+-- vim.keymap.set("n", "j", "mzj`z", { noremap = true, silent = true, desc = "join line and keep cursor" })
 vim.keymap.set("n", "n", "nzzzv", { noremap = true, silent = true, desc = "next search result centered" })
 vim.keymap.set("n", "n", "nzzzv", { noremap = true, silent = true, desc = "previous search result centered" })
 vim.keymap.set("n", "<c-d>", "<c-d>zz", { noremap = true, silent = true, desc = "scroll down centered" })
 vim.keymap.set("n", "<c-u>", "<c-u>zz", { noremap = true, silent = true, desc = "scroll up centered" })
 vim.keymap.set("n", "*", "*zzzv", { noremap = true, silent = true, desc = "search word under cursor centered" })
 -- garder la ligne centrée à chaque mouvement vertical
-vim.keymap.set('n', 'j', 'jzz', { noremap = true, silent = true })
-vim.keymap.set('n', 'k', 'kzz', { noremap = true, silent = true })
+-- vim.keymap.set('n', 'j', 'jzz', { noremap = true, silent = true })
+-- vim.keymap.set('n', 'k', 'kzz', { noremap = true, silent = true })
 
 
 
@@ -169,9 +169,7 @@ local function insert_console_log()
   end
 end
 
--- raccourci clavier : ctrl + l
-vim.keymap.set({ "n", "v" }, "<c-l>", insert_console_log, { desc = "insert console.log for word/selection" })
-
+vim.keymap.set({ "n", "v" }, "<leader>L", insert_console_log, { desc = "insert console.log for word/selection" })
 
 
 

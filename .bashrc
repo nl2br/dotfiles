@@ -95,7 +95,7 @@ fi
 alias ll='ls -al'
 #alias la='ls -A'
 #alias l='ls -CF'
-alias fzv='vim $(fzf -m --preview="cat {}")'
+alias fzv='nvim $(fzf -m --preview="cat {}")'
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like

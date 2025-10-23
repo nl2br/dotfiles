@@ -22,6 +22,7 @@ return {
       html = { "prettier" },
       markdown = { "prettier" },
       yaml = { "prettier" },
+      lua = { "stylua" }
     },
 
     -- Préfère le binaire local du projet, comme VS Code
